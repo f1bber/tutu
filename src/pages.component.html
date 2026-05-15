@@ -1,0 +1,52 @@
+﻿<div class="admin-users-page__header">
+  <p>Админы</p>
+  <button (click)="onAddAdminBtn()">Добавить админа</button>
+</div>
+
+<div class="admin-users-page__content">
+  <div class="admin-users-page__table-wrapper">
+    <div *ngIf="loading" class="loading">Загрузка...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    
+    <table *ngIf="admins.length > 0 && !loading" class="admins-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Логин</th>
+          <th>Активен</th>
+          <th>Дата рождения</th>
+          <th>Дата создания</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let admin of admins; let i = index" (click)="onAdminSelect(admin)">
+          <td>{{ admin.admin_id }}</td>
+          <td>{{ admin.admin_login }}</td>
+          <td>{{ admin.is_active_admin ? 'Да' : 'Нет' }}</td>
+          <td>{{ admin.admin_birth_date | date: 'dd.MM.yyyy' }}</td>
+          <td>{{ admin.created_at | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td class="actions-cell" (click)="$event.stopPropagation()">
+            <button class="delete-btn" (click)="deleteAdmin(admin.admin_id)">
+              Удалить
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="admins.length === 0 && !loading" class="empty">Администраторы не найдены</div>
+  </div>
+
+  <aside class="admin-users-page__aside">
+    <app-add-admin-form 
+      *ngIf="asideIndex == 1" 
+      (adminCreated)="onAdminCreated($event)">
+    </app-add-admin-form>
+    <app-edit-admin
+      *ngIf="asideIndex == 2"
+      [selectedAdmin]="selectedAdmin"
+      (adminUpdated)="onAdminUpdated($event)">
+    </app-edit-admin>
+  </aside>
+</div>
